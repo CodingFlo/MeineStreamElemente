@@ -1,0 +1,290 @@
+* {
+    font-family: sans-serif;
+    box-sizing: border-box !important;
+    color: #F0F0F0 !important;
+}
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-size: 15px;
+    font-family: 'Inter', sans-serif;
+}
+
+.is-obs {
+    overflow: hidden !important;
+}
+
+/* --- ANIMATION KEYFRAMES for message entrance --- */
+@keyframes fadeInGrowFromBottom {
+    0% {
+        max-height: 0;
+        padding-top: 0;
+        padding-bottom: 0;
+        transform: translateX(-100%) translateY(20px);
+        opacity: 0;
+        overflow: hidden;
+    }
+
+    100% {
+        max-height: 1000px;
+        padding-top: 1em;
+        padding-bottom: 1em;
+        transform: translateX(0) translateY(0);
+        opacity: 1;
+        overflow: visible;
+    }
+}
+
+@keyframes fadeInShrinkFromTop {
+    0% {
+        max-height: 1000px;
+        padding-top: 1em;
+        padding-bottom: 1em;
+        transform: translateX(0) translateY(0);
+        opacity: 1;
+        overflow: visible;
+    }
+
+    100% {
+        max-height: 0;
+        padding-top: 0;
+        padding-bottom: 0;
+        transform: translateX(-100%) translateY(20px);
+        opacity: 0;
+        overflow: hidden;
+    }
+}
+
+@keyframes fadeOutAnimation {
+    0% {
+        opacity: 100%;
+    }
+
+    100% {
+        opacity: 0%;
+        transform: translateY(-50%);
+    }
+}
+
+#chat-messagbox {
+    left: 0;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box !important;
+    overflow-y: hidden !important;
+    overflow-x: hidden !important;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-start;
+    padding: 0.5em 0;
+}
+
+.deleted {
+    animation: fadeInShrinkFromTop 0.4s ease-out both !important;
+}
+
+.fade-out {
+    animation: fadeOutAnimation 0.4s ease-out both !important;
+}
+
+/* --- Nachrichten-Container (entspricht #chat-messages in deiner index.html) --- */
+#chat-messages {
+    left: 0;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box !important;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-start;
+    padding: 0.5em 0;
+    gap: 0.5em;
+}
+
+/* --- Einzelne Chat-Nachricht (wird von JS erstellt) --- */
+.chat-message {
+    /* Optimierungen für flüssige Animationen */
+    will-change: transform, opacity, max-height, padding-top, padding-bottom;
+    transform-origin: center center;
+    /* Dies ist der Drehpunkt für die Transformation */
+
+    /* Anwendung der Animation: Dauer, Timing-Funktion und Füllmodus */
+    animation: fadeInGrowFromBottom 0.4s ease-out both;
+
+    /* Grundlegende Stildefinitionen für Chat-Nachrichten */
+    max-height: 100%;
+    /* Wichtig: Standard max-height, damit die Animation funktioniert */
+    padding: 1em;
+    /* Standard-Padding */
+
+    /* Clear red bubbles (translucent for OBS) */
+    background: linear-gradient(135deg, rgba(255, 38, 38, 0.36), rgba(120, 0, 0, 0.44));
+    border: 1px solid rgba(255, 40, 40, 0.38);
+    border-radius: 14px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35), 0 0 20px rgba(255, 40, 40, 0.35) inset, 0 0 16px rgba(255, 40, 40, 0.25);
+
+    margin: 0 0.5em;
+    width: calc(100% - 1em);
+    /* Berücksichtigt Margins und Paddings */
+
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 0.5em;
+
+    /* Default left accent for normal chatters (neutral white) */
+    border-left: 4px solid rgba(255, 255, 255, 0.75);
+}
+
+/* Red-themed role accents (simple border-left) */
+.chat-message.is-broadcaster {
+    border-left: 4px solid #ff3b30;
+}
+
+.chat-message.is-mod {
+    border-left: 4px solid #4738d1bd;
+}
+
+.chat-message.is-vip {
+    border-left: 4px solid #cb83bebd;
+}
+
+.chat-message.is-twitch-partner {
+    border-left: 4px solid #ff4d88bd;
+}
+
+.chat-message.is-sub {
+    border-left: 4px solid #ff7a3dbd;
+}
+
+/* --- Container für Badges (links) --- */
+.badges-container {
+    display: flex;
+    flex-direction: row;
+    /* Badges untereinander */
+    align-items: center;
+    /* Badges horizontal zentrieren */
+    gap: 5px;
+    /* Abstand zwischen den einzelnen Badges */
+    flex-shrink: 0;
+    /* Verhindert, dass der Badge-Container schrumpft */
+}
+
+/* --- Die einzelnen Badge-Bilder (jetzt größer) --- */
+.badge-image {
+    width: auto !important;
+    height: 24px !important;
+    /* Badges größer machen (z.B. von 14px auf 24px) */
+    max-width: 100%;
+    display: block;
+}
+
+/* --- Container für Username und Message Text (rechts) --- */
+.message-content {
+    display: flex;
+    flex-direction: column;
+    /* Name über der Nachricht */
+    align-items: flex-start;
+    /* Links ausrichten */
+    flex-grow: 1;
+    /* Nimmt den restlichen Platz ein */
+    min-width: 0;
+    /* Ermöglicht korrekte Größenanpassung bei langen Texten */
+}
+
+/* --- Username Styling (jetzt im message-content) --- */
+.is-twitch-partner .username {
+    background-image: linear-gradient(to top, #9146ff, #a26ded) !important;
+}
+
+.is-vip .username {
+    background-image: linear-gradient(to top, #9f1886, #cb83be) !important;
+}
+
+.is-mod .username {
+    background-image: linear-gradient(to top, #9e99c9, #4838d1) !important;
+}
+
+.is-broadcaster .username {
+    /* Füge den Gradienten für den Text hinzu */
+    background-image: linear-gradient(to top, #e91916, #d56f6d) !important;
+}
+
+/* Subscriber name color (matches orange/amber accent) */
+.is-sub .username {
+    background-image: linear-gradient(to top, #ff9a4d, #ff7a3d) !important;
+}
+
+.chat-message .username {
+    width: 100%;
+    font-weight: 700;
+    font-size: 1.1em;
+    margin-top: 0px;
+    margin-bottom: 2px;
+    /* Abstand zur Nachricht */
+    letter-spacing: 0.5px;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    background-image: linear-gradient(to top, #ffffff, #9f9f9f);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: none;
+    filter: none;
+}
+
+/* --- Message Text Styling (jetzt im message-content) --- */
+.chat-message .message-text {
+    line-height: 1.4;
+    width: 100%;
+    font-size: 1em;
+    margin: 0;
+    padding: 0;
+    color: #ffecec;
+
+    white-space: normal;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+/* Default username tint toward red theme when no special gradient applies */
+.chat-message .username {
+    text-shadow: 0 0 6px rgba(255, 48, 48, 0.25);
+}
+
+/* --- Override specific elements (Streamlabs specific, bleiben ungenutzt) --- */
+.colon {
+    display: none;
+}
+
+.meta {
+    display: flex;
+    align-items: center;
+    -webkit-text-stroke-width: 0;
+}
+
+.badge {
+    margin: 0 !important;
+    height: auto !important;
+}
+
+/* --- Emote Styling (Wenn du die Emote-Verarbeitung in JS implementiert hast) --- */
+.chat-message .chat-emote {
+    display: inline-block;
+    height: 1.4em;
+    vertical-align: middle;
+    margin: 0 2px;
+}

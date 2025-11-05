@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stream Zuschauerliste</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>Zuschauerliste</h1>
+
+        <div class="status-container">
+            Status: <span id="status">Verbinde...</span>
+        </div>
+        <div class="status-container">
+            Stream-Status: <span id="stream-status">Lade...</span>
+        </div>
+        <div class="total-viewers-container status-container">
+            Gesamtzahl: <span id="total-viewers">0</span>
+        </div>
+        <div class="status-container">
+            Zuletzt aktualisiert: <span id="last-updated-time">--:--:--</span>
+        </div>
+    </header>
+
+    <main class="viewer-grid">
+        <section class="viewer-category">
+            <h2>⚔️ Moderatoren</h2>
+            <ul id="mods-list" class="viewer-list">
+            </ul>
+        </section>
+
+        <section class="viewer-category">
+            <h2>👑 VIPs</h2>
+            <ul id="vips-list" class="viewer-list">
+            </ul>
+        </section>
+
+        <section class="viewer-category">
+            <h2>👋 Zuschauer</h2>
+            <ul id="viewers-list" class="viewer-list">
+            </ul>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

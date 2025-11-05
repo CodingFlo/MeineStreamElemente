@@ -1,0 +1,195 @@
+/* Globale Variablen für Farben, Schrift und Schatten */
+:root {
+    --bg-color-body: #121212;
+    --container-bg-color: #1e1e1e;
+    --main-stat-box-bg: #1e1e1e;
+    --main-stat-box-border: #333;
+    --main-stat-box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    --text-color-primary: #e0e0e0;
+    --label-color: #ccc;
+    --value-color: #fff;
+    --heading-color: #9b59b6;
+    --meta-text-color: #888;
+    --scrollbar-track-color: var(--main-stat-box-bg);
+    --scrollbar-thumb-color: var(--main-stat-box-border);
+    --scrollbar-thumb-hover-color: var(--meta-text-color);
+    --scrollbar-width: 8px;
+
+    --font-family: 'Inter', sans-serif;
+    --font-size-base: 1.1em;
+    --font-size-h1: 2rem;
+    --font-size-stat-card: 1em;
+    --font-size-card-content: 1.2em;
+    --font-size-last-update: 0.8em;
+}
+
+/* Grundlegende Stile */
+body {
+    font-family: var(--font-family);
+    background-color: var(--bg-color-body);
+    color: var(--text-color-primary);
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    min-height: 100vh;
+    width: 100%;
+}
+
+/* Haupt-Container */
+#stats-container {
+    background-color: var(--container-bg-color);
+    border-radius: 12px;
+    box-shadow: var(--main-stat-box-shadow);
+    padding: 30px;
+    width: 100%;
+    max-width: 600px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    font-size: var(--font-size-base);
+}
+
+/* Überschrift */
+h1 {
+    color: var(--heading-color);
+    text-align: center;
+    font-size: var(--font-size-h1);
+    margin: 0 0 20px 0;
+    letter-spacing: 1px;
+    font-weight: 700;
+}
+
+/* Scrollbare Statistik-Box */
+#cards-scroll-area {
+    flex-grow: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background-color: var(--main-stat-box-bg);
+    border: 1px solid var(--main-stat-box-border);
+    border-radius: 12px;
+    box-shadow: var(--main-stat-box-shadow);
+    padding: 15px;
+    padding-right: calc(15px + var(--scrollbar-width));
+    margin-bottom: 20px;
+
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-thumb-color) var(--scrollbar-track-color);
+}
+
+#cards-scroll-area::-webkit-scrollbar {
+    width: var(--scrollbar-width);
+}
+
+#cards-scroll-area::-webkit-scrollbar-track {
+    background: var(--scrollbar-track-color);
+    border-radius: 12px;
+}
+
+#cards-scroll-area::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-thumb-color);
+    border-radius: 12px;
+    border: 2px solid var(--scrollbar-track-color);
+}
+
+#cards-scroll-area::-webkit-scrollbar-thumb:hover {
+    background-color: var(--scrollbar-thumb-hover-color);
+}
+
+/* Statistikzeilen */
+.stat-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 5px 0;
+    margin-bottom: 5px;
+    font-size: var(--font-size-stat-card);
+}
+
+.stat-card:last-of-type {
+    margin-bottom: 0;
+}
+
+.stat-card .label {
+    font-weight: 600;
+    color: var(--label-color);
+    font-size: var(--font-size-card-content);
+    flex-grow: 1;
+    text-align: left;
+    min-width: fit-content;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-right: 10px;
+}
+
+.stat-card .value {
+    font-weight: 700;
+    color: var(--value-color);
+    font-size: var(--font-size-card-content);
+    text-align: right;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Status-Box */
+#status-info-box {
+    background-color: var(--container-bg-color);
+    border: 1px solid var(--main-stat-box-border);
+    border-radius: 12px;
+    box-shadow: var(--main-stat-box-shadow);
+    margin: 10px 0;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#connection-status-display {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--meta-text-color);
+}
+
+#connection-status-display.connected {
+    color: #2ecc71;
+}
+
+#connection-status-display.disconnected {
+    color: #cf6679;
+    animation: pulse 1.5s infinite alternate;
+}
+
+#connection-status-display.connecting {
+    color: #9b59b6;
+}
+
+.last-update {
+    font-size: var(--font-size-last-update);
+    color: var(--meta-text-color);
+    text-align: center;
+    margin-top: 5px;
+}
+
+#last-update-time {
+    font-weight: bold;
+    color: var(--text-color-primary);
+}
+
+@keyframes pulse {
+    from {
+        opacity: 0.8;
+    }
+
+    to {
+        opacity: 1;
+    }
+}

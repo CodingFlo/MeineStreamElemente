@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Twitch Live Stats Overlay</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="stats-container">
+        <h1>Twitch Live Stats</h1>
+
+        <div id="status-info-box">
+            <div id="connection-status-display" class="connection-status-message">Verbindung wird hergestellt...</div>
+            <div class="last-update">
+                Letztes Update: <span id="last-update-time"></span>
+            </div>
+        </div>
+
+        <div id="cards-scroll-area">
+            <div class="stat-card" id="status-card">
+                <span class="label">Status:</span>
+                <span class="value" id="stream-status">Offline</span>
+            </div>
+            <div class="stat-card" id="viewers-card">
+                <span class="label">Zuschauer:</span>
+                <span class="value" id="current-viewers">0</span>
+            </div>
+            <div class="stat-card" id="followers-card">
+                <span class="label">Follower:</span>
+                <span class="value" id="total-followers">0</span>
+            </div>
+            <div class="stat-card" id="subscribers-card">
+                <span class="label">Subscriber:</span>
+                <span class="value" id="total-subscribers">0</span>
+            </div>
+            <div class="stat-card" id="title-card">
+                <span class="label">Titel:</span>
+                <span class="value" id="stream-title">N/A</span>
+            </div>
+            <div class="stat-card" id="game-card">
+                <span class="label">Spiel/Kategorie:</span>
+                <span class="value" id="game-name">N/A</span>
+            </div>
+            <div class="stat-card" id="clips-card">
+                <span class="label">Neue Clips:</span>
+                <span class="value" id="clips-created">0</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
