@@ -163,7 +163,7 @@ async function showNextAlert() {
 
         alertMessage.innerHTML = nextAlert.text;
 
-        alertTextBackground.className = '';
+        alertTextBackground.className = 'alert-panel';
         alertTextBackground.classList.add(nextAlert.gradientClass);
 
         alertContainer.classList.remove('hidden');
@@ -253,12 +253,12 @@ function showRaid(userName, raiderAmount) {
 function showCheer(username, bits, message) {
     const cheerUser = username || 'Anonym';
     const text = `${cheerUser} hat ${bits} Bits gecheert!<br>"${message}"`;
-    showAlert(text, "gradient-sub", cheerSound); // Hier kannst du einen spezifischen Gradienten und Sound festlegen
+    showAlert(text, "gradient-cheer", cheerSound); // Cheer hat eigenes Violett
 }
 
 function showHypeTrainBegin(level) {
     const text = `Hype Train startet! Aktuelles Level: ${level}!`;
-    showAlert(text, "gradient-sub", hypeTrainBeginSound, 3000); // Hier kannst du einen spezifischen Gradienten und Sound festlegen
+    showAlert(text, "gradient-hype-train", hypeTrainBeginSound, 3000);
 }
 
 function showChannelPointsRedemption(username, rewardTitle, input) {
@@ -269,7 +269,7 @@ function showChannelPointsRedemption(username, rewardTitle, input) {
 
 function showGoalBegin(description, currentAmount, targetAmount, goalType) {
     const text = `Neues Ziel: ${description}! Aktuell: ${currentAmount}, Ziel: ${targetAmount} (${goalType})`;
-    showAlert(text, "gradient-sub", goalBeginSound, 5000); // Hier kannst du einen spezifischen Gradienten und Sound festlegen
+    showAlert(text, "gradient-goal-begin", goalBeginSound, 5000);
 }
 
 function showNewCustomAlert(message) {

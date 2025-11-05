@@ -1,31 +1,37 @@
 /* Globale Variablen definieren */
 :root {
-    --alert-border-radius: 15px;
+    --alert-border-radius: 14px;
     --alert-padding-y: 20px;
     --alert-padding-x: 40px;
     --alert-min-width: 400px;
     --alert-min-height: 120px;
     --alert-box-shadow-strength: 20px;
     --alert-border-width: 0.5em;
-    --alert-bottom-offset: 0.01px;
+    --alert-bottom-offset: 0px;
 
-    /* NEU: Variablen für Animation hinzugefügt */
+    /* Animation */
     --animation-speed: 3s;
-    /* Je größer, desto langsamer die Animation */
     --gradient-size: 200%;
-    /* Wie viel größer der Gradient sein soll, damit er sich bewegen kann */
 
-
-    /* Größen für den Text */
+    /* Typografie und Text */
     --alert-font-size: 2.2em;
     --alert-text-shadow-strength: 4px;
 
     /* Transitions */
     --alert-transition-duration: 0.5s;
     --alert-hide-translate-y: 100px;
+    /* Hintergrund-Farben (Standard Rot) */
+    --alert-bg-start: #2a0707;
+    --alert-bg-end: #3a0b0b;
 }
 
-/* Allgemeiner Stil für den Alert-Container */
+/* Allgemeiner Stil für den Alert-Container (an Stream Chat angepasst) */
+* {
+    font-family: 'Inter', sans-serif;
+    box-sizing: border-box !important;
+    color: #F0F0F0 !important;
+}
+
 html,
 body {
     margin: 0;
@@ -33,9 +39,7 @@ body {
     width: 100%;
     height: 100%;
     overflow: hidden;
-    font-family: 'Arial', sans-serif;
-    color: white;
-    text-shadow: 2px 2px var(--alert-text-shadow-strength) rgba(0, 0, 0, 0.7);
+    font-size: 15px;
 }
 
 #alert-container {
@@ -45,12 +49,14 @@ body {
     width: 100%;
     height: calc(100% - var(--alert-bottom-offset) - var(--alert-box-shadow-strength));
     position: relative;
+    z-index: 9999;
     overflow: visible;
     opacity: 1;
     transition: none;
 }
 
 /* Animationen und Sichtbarkeit werden auf #alert-text-background angewendet */
+/* Alert Bubble im Stream-Chat Look (gläsernes, rotes Panel) */
 #alert-text-background {
     display: flex;
     align-items: center;
@@ -60,14 +66,28 @@ body {
     min-width: var(--alert-min-width);
     min-height: var(--alert-min-height);
     max-width: calc(100% - (var(--alert-padding-x) * 2));
-    box-shadow: 0 0 var(--alert-box-shadow-strength) rgba(0, 0, 0, 0.6);
     position: relative;
     overflow: hidden;
-    /* Behalte dies bei, damit der Gradient innerhalb des Rahmens bleibt */
     opacity: 0;
     transform: translateY(var(--alert-hide-translate-y));
     transition: opacity var(--alert-transition-duration) ease-in-out, transform var(--alert-transition-duration) ease-in-out;
     margin-bottom: var(--alert-bottom-offset);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+/* Fallback, damit die Box nie transparent ist */
+.alert-base {
+    background: #1f1f1f;
+    border: 1px solid #2a2a2a;
+}
+
+/* Gemeinsame Glas-Optik wie im Chat */
+.alert-panel {
+    /* Overlay-Look: Hintergrund über Variablen, Border per Akzentfarbe */
+    background: linear-gradient(180deg, var(--alert-bg-start, #2a0707) 0%, var(--alert-bg-end, #3a0b0b) 100%);
+    border: 2px solid var(--alert-accent-color, #ff2a2a);
+    border-radius: var(--alert-border-radius);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45), 0 0 22px rgba(255, 42, 42, 0.18);
 }
 
 #alert-container.hidden #alert-text-background {
@@ -83,16 +103,17 @@ body {
 /* Stil für den Text innerhalb des Alerts */
 #alert-message {
     font-size: var(--alert-font-size);
-    font-weight: bold;
+    font-weight: 700;
     text-align: center;
     z-index: 2;
     position: relative;
-    color: white;
+    color: #ffffff;
     word-break: break-word;
     overflow-wrap: break-word;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
 }
 
-/* --- Gradient Klassen --- */
+/* --- Gradient Klassen (beibehalten, aber Chat-Style ist Default) --- */
 @keyframes gradient-animation {
     0% {
         background-position: 0% 50%;
@@ -111,97 +132,76 @@ body {
 }
 
 .gradient-sub {
-    background: linear-gradient(45deg, #FF6F00, #FFA000, #FF6F00);
-    background-size: var(--gradient-size) var(--gradient-size);
-    animation: gradient-animation var(--animation-speed) ease-in-out infinite;
-    box-shadow: 0 0 var(--alert-box-shadow-strength) rgba(255, 111, 0, 0.6);
-    /* Border-Farbe noch weißer gemacht */
-    border: var(--alert-border-width) solid #FFF8E1;
-    /* Sehr helles, fast weißes Gelb */
+    /* Gold */
+    --alert-accent-color: #ffc233;
+    /* etwas wärmeres Amber */
+    --alert-bg-start: #211200;
+    /* dunkler, weniger gelb leuchtend */
+    --alert-bg-end: #331d00;
 }
 
 .gradient-follow {
-    background: linear-gradient(45deg, #D32F2F, #F44336, #D32F2F);
-    background-size: var(--gradient-size) var(--gradient-size);
-    animation: gradient-animation var(--animation-speed) ease-in-out infinite;
-    box-shadow: 0 0 var(--alert-box-shadow-strength) rgba(211, 47, 47, 0.6);
-    border: var(--alert-border-width) solid #FFEBEE;
+    /* Rot */
+    --alert-accent-color: #ff2a2a;
+    /* näher am Rahmenrot */
+    --alert-bg-start: #260707;
+    --alert-bg-end: #350a0a;
 }
 
 .gradient-raid {
-    background: linear-gradient(45deg, #4CAF50, #8BC34A, #4CAF50);
-    background-size: var(--gradient-size) var(--gradient-size);
-    animation: gradient-animation var(--animation-speed) ease-in-out infinite;
-    box-shadow: 0 0 var(--alert-box-shadow-strength) rgba(76, 175, 80, 0.6);
-    /* Border-Farbe auf reines Weiß geändert */
-    border: var(--alert-border-width) solid #d6ead7;
+    /* Grün */
+    --alert-accent-color: #43a047;
+    --alert-bg-start: #0f2a12;
+    --alert-bg-end: #134018;
 }
 
 .gradient-warn {
-    background: linear-gradient(45deg, #8B0000, #B22222, #8B0000);
-    /* Dunkelrot -> Ziegelrot -> Dunkelrot */
-    background-size: var(--gradient-size) var(--gradient-size);
-    animation: gradient-animation var(--animation-speed) ease-in-out infinite;
-    box-shadow: 0 0 var(--alert-box-shadow-strength) rgba(139, 0, 0, 0.9);
-    /* Dunkelroter Schatten, höhere Deckkraft */
-    border: var(--alert-border-width) solid #FF0000;
-    /* Leuchtend roter Rand */
+    /* Warn: Rot */
+    --alert-accent-color: #ff3b30;
+    --alert-bg-start: #2a0707;
+    --alert-bg-end: #3a0b0b;
 }
 
-/* Gradient für Cheers (Beispiel: Gold / Gelb-Orange) */
+/* Cheer: Violett */
 .gradient-cheer {
-    background: linear-gradient(45deg, #FFD700, #FFA500, #FFD700);
-    background-size: var(--gradient-size) var(--gradient-size);
-    animation: gradient-animation var(--animation-speed) ease-in-out infinite;
-    box-shadow: 0 0 var(--alert-box-shadow-strength) rgba(255, 215, 0, 0.7);
-    border: var(--alert-border-width) solid #FFEFD5;
-    /* Sehr helles Cremeweiß */
+    --alert-accent-color: #7B5CFF;
+    --alert-bg-start: #120f2a;
+    --alert-bg-end: #1a1640;
 }
 
 /* Gradient für Hype Train (Beispiel: Pink / Lila) */
 .gradient-hype-train {
-    background: linear-gradient(45deg, #FF69B4, #DA70D6, #FF69B4);
-    background-size: var(--gradient-size) var(--gradient-size);
-    animation: gradient-animation var(--animation-speed) ease-in-out infinite;
-    box-shadow: 0 0 var(--alert-box-shadow-strength) rgba(255, 105, 180, 0.7);
-    border: var(--alert-border-width) solid #FFE0F0;
-    /* Sehr helles Pink */
+    /* Pink/Lila */
+    --alert-accent-color: #ff69b4;
+    --alert-bg-start: #2a061b;
+    --alert-bg-end: #3a0b28;
 }
 
-/* Gradient für Channel Points Redemptions (Beispiel: Türkis / Cyan) */
+/* Goal: goldener Akzent (nur Rahmen/Glow) */
 .gradient-goal-begin {
-    background: linear-gradient(45deg, #CD7F32, #B87333, #D4AF37);
-    /* Bronzene Farbtöne */
-    background-size: var(--gradient-size) var(--gradient-size);
-    animation: gradient-animation var(--animation-speed) ease-in-out infinite;
-    box-shadow: 0 0 var(--alert-box-shadow-strength) rgba(205, 127, 50, 0.7);
-    /* Passender bronzener Schatten */
-    border: var(--alert-border-width) solid #E0AA82;
+    /* Gold */
+    --alert-accent-color: #ffd54a;
+    --alert-bg-start: #2a1400;
+    --alert-bg-end: #3a1f00;
 }
 
-/* Gradient für Goal Begin (Beispiel: Grün / Hellgrün) */
+/* Duplicate kept consistent (some files defined it twice) */
 .gradient-goal-begin {
-    background: linear-gradient(45deg, #32CD32, #7CFC00, #32CD32);
-    background-size: var(--gradient-size) var(--gradient-size);
-    animation: gradient-animation var(--animation-speed) ease-in-out infinite;
-    box-shadow: 0 0 var(--alert-box-shadow-strength) rgba(50, 205, 50, 0.7);
-    border: var(--alert-border-width) solid #F0FFF0;
+    --alert-accent-color: #ffd54a;
 }
 
 .gradient-channel-points {
-    background: linear-gradient(45deg, #5B636A, #7A858F, #9CAAB6);
-    background-size: var(--gradient-size) var(--gradient-size);
-    animation: gradient-animation var(--animation-speed) ease-in-out infinite;
-    box-shadow: 0 0 var(--alert-box-shadow-strength) rgba(91, 99, 106, 0.7);
-    border: var(--alert-border-width) solid #BEC8D1;
+    /* Blau */
+    --alert-accent-color: #00a6ff;
+    --alert-bg-start: #061f2a;
+    --alert-bg-end: #0b2f3a;
 }
 
-/* Gradient für den allgemeinen benutzerdefinierten Alert (Beispiel: Blauton, wie gewünscht) */
+/* Custom: Cyan */
 .gradient-custom {
-    background: linear-gradient(45deg, #00C6FF, #0072FF, #00C6FF);
-    /* Ein schöner Blauton */
-    background-size: var(--gradient-size) var(--gradient-size);
-    animation: gradient-animation var(--animation-speed) ease-in-out infinite;
-    box-shadow: 0 0 var(--alert-box-shadow-strength) rgba(0, 198, 255, 0.6);
-    border: var(--alert-border-width) solid #CCEEFF;
+    --alert-accent-color: #0090ff;
+    /* dezenteres Blau */
+    --alert-bg-start: #061b2a;
+    /* tieferes Blau, weniger grell */
+    --alert-bg-end: #0b2740;
 }
