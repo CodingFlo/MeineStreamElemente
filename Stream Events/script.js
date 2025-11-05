@@ -1,5 +1,5 @@
 // frontend/script.js
-const DEBUG = false;
+const DEBUG = true;
 
 document.addEventListener('DOMContentLoaded', () => {
     const alertList = document.getElementById('alert-list');
@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const testAlerts = [
             {
                 type: "raid",
-                username: "oneman133708",
+                from_broadcaster_name: "oneman133708",
                 viewers: 3,
                 timestamp: new Date().toISOString()
             },
