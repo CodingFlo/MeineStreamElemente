@@ -396,8 +396,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Diese Funktionen (removeIfOutsideParent und checkAndRemoveTopMessage) sind für das Entfernen von Nachrichten,
     // die aus dem Sichtfeld scrollen, gedacht.
-    // Sie wurden vom Benutzer im Originalcode bereitgestellt. Ich habe die Verwendung von !important
-    // in removeIfOutsideParent korrigiert, um flüssigere Übergänge zu ermöglichen.
     function removeIfOutsideParent(childElement, parentElement, thresholdPercentage = 1) {
         if (!childElement || !parentElement) {
             return;
