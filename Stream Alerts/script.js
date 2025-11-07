@@ -156,56 +156,157 @@ function intializeWebsocket() {
     };
 }
 
+// async function showNextAlert() {
+//     if (alertQueue.length > 0 && !isAlertShowing) {
+//         isAlertShowing = true;
+//         const nextAlert = alertQueue.shift();
+
+//         alertMessage.innerHTML = nextAlert.text;
+
+//         alertTextBackground.className = 'alert-panel';
+//         alertTextBackground.classList.add(nextAlert.gradientClass);
+
+//         alertContainer.classList.remove('hidden');
+//         alertContainer.classList.add('visible');
+
+//         let soundDuration = 0;
+//         if (nextAlert.sound) {
+//             nextAlert.sound.currentTime = 0;
+//             nextAlert.sound.play().catch(e => console.error("Fehler beim Abspielen des Sounds:", e));
+
+//             soundDuration = await new Promise(resolve => {
+//                 const onCanPlayThrough = () => {
+//                     nextAlert.sound.removeEventListener('canplaythrough', onCanPlayThrough);
+//                     resolve(nextAlert.sound.duration * 1000);
+//                 };
+//                 const onEnded = () => {
+//                     nextAlert.sound.removeEventListener('ended', onEnded);
+//                     nextAlert.sound.removeEventListener('canplaythrough', onCanPlayThrough);
+//                     resolve(0);
+//                 };
+//                 nextAlert.sound.addEventListener('canplaythrough', onCanPlayThrough);
+//                 nextAlert.sound.addEventListener('ended', onEnded);
+
+//                 setTimeout(() => {
+//                     nextAlert.sound.removeEventListener('canplaythrough', onCanPlayThrough);
+//                     nextAlert.sound.removeEventListener('ended', onEnded);
+//                     resolve(3000);
+//                 }, 5000);
+//             });
+//         }
+
+//         const totalAlertDuration = Math.max(5000 + (nextAlert.extraMilliSeconds || 0), soundDuration);
+//         await new Promise(resolve => setTimeout(resolve, totalAlertDuration));
+
+//         await new Promise(resolve => setTimeout(resolve, 500));
+
+//         alertContainer.classList.remove('visible');
+//         alertContainer.classList.add('hidden');
+//         isAlertShowing = false;
+
+//         await showNextAlert();
+//     } else if (alertQueue.length === 0 && !isAlertShowing) {
+//         clearInterval(queueProcessingInterval);
+//         queueProcessingInterval = null;
+//         console.log("Warteschlange leer. Warte auf neue Alerts vom Backend.");
+//     }
+// }
+
 async function showNextAlert() {
+    // 1. Prüfe, ob ein Alert angezeigt werden kann
     if (alertQueue.length > 0 && !isAlertShowing) {
         isAlertShowing = true;
         const nextAlert = alertQueue.shift();
 
+        // **Anzeigen des Alerts**
         alertMessage.innerHTML = nextAlert.text;
-
         alertTextBackground.className = 'alert-panel';
         alertTextBackground.classList.add(nextAlert.gradientClass);
-
         alertContainer.classList.remove('hidden');
         alertContainer.classList.add('visible');
 
-        let soundDuration = 0;
+        // **Sound-Logik**
+        let soundPromise = Promise.resolve(0); // Standardmäßig 0 Wartezeit
+        const minDisplayTime = 5000 + (nextAlert.extraMilliSeconds || 0);
+
         if (nextAlert.sound) {
             nextAlert.sound.currentTime = 0;
-            nextAlert.sound.play().catch(e => console.error("Fehler beim Abspielen des Sounds:", e));
 
-            soundDuration = await new Promise(resolve => {
-                const onCanPlayThrough = () => {
-                    nextAlert.sound.removeEventListener('canplaythrough', onCanPlayThrough);
-                    resolve(nextAlert.sound.duration * 1000);
+            soundPromise = new Promise(resolve => {
+                // Event-Listener zum Entfernen, wenn der Sound beendet ist
+                const onSoundEnded = () => {
+                    nextAlert.sound.removeEventListener('ended', onSoundEnded);
+                    resolve(0); // Sound ist zu Ende gespielt, es muss nicht weiter gewartet werden.
                 };
-                const onEnded = () => {
-                    nextAlert.sound.removeEventListener('ended', onEnded);
-                    nextAlert.sound.removeEventListener('canplaythrough', onCanPlayThrough);
-                    resolve(0);
-                };
-                nextAlert.sound.addEventListener('canplaythrough', onCanPlayThrough);
-                nextAlert.sound.addEventListener('ended', onEnded);
 
-                setTimeout(() => {
-                    nextAlert.sound.removeEventListener('canplaythrough', onCanPlayThrough);
-                    nextAlert.sound.removeEventListener('ended', onEnded);
-                    resolve(3000);
-                }, 5000);
+                // Füge den Listener hinzu
+                nextAlert.sound.addEventListener('ended', onSoundEnded);
+
+                // Starte die Wiedergabe
+                nextAlert.sound.play().catch(e => {
+                    console.error("Fehler beim Abspielen des Sounds:", e);
+                    nextAlert.sound.removeEventListener('ended', onSoundEnded);
+                    resolve(0); // Fehler: Warte nicht auf den Sound
+                });
             });
         }
 
-        const totalAlertDuration = Math.max(5000 + (nextAlert.extraMilliSeconds || 0), soundDuration);
-        await new Promise(resolve => setTimeout(resolve, totalAlertDuration));
+        // **Wartezeit-Bestimmung**
+        // Warte auf die längere Dauer: Mindest-Anzeigedauer ODER Sound-Laufzeit
+        // Hier benötigen wir die tatsächliche Dauer des Sounds nicht, sondern warten nur,
+        // dass die *kürzere* Zeit vom Sound-Promise (bis zum Ende) oder der Timeout
+        // für die Mindestzeit abgelaufen ist.
 
+        // Warte auf das längere der beiden:
+        await Promise.race([
+            // 1. Warte auf das Ende des Sounds
+            soundPromise,
+            // 2. Warte auf die Mindest-Anzeigedauer
+            new Promise(resolve => setTimeout(resolve, minDisplayTime))
+        ]);
+
+        // Stelle sicher, dass der Sound gestoppt wird, falls er noch läuft und wir wegen
+        // der Mindest-Anzeigedauer weitergemacht haben (kann optional sein)
+        if (nextAlert.sound) {
+            // Entferne den 'ended' Listener, falls er nicht schon ausgelöst wurde
+            // (um Speicherlecks zu vermeiden, falls er noch aktiv ist)
+            nextAlert.sound.removeEventListener('ended', () => { });
+            // nextAlert.sound.pause(); // Optional: Stoppe den Sound, wenn Mindestzeit erreicht
+        }
+        
         alertContainer.classList.remove('visible');
         alertContainer.classList.add('hidden');
 
-        await new Promise(resolve => setTimeout(resolve, 500));
+        await new Promise(resolve => {
+            // Definiere den Listener, der einmalig ausgeführt wird
+            const onTransitionEnd = (event) => {
+                // optional: Stelle sicher, dass nur die Transition des Hauptcontainers zählt
+                if (event.target !== alertContainer) return;
 
+                alertContainer.removeEventListener('transitionend', onTransitionEnd);
+                resolve();
+            };
+
+            // Füge den Listener hinzu
+            alertContainer.addEventListener('transitionend', onTransitionEnd);
+
+            // **WICHTIGER Fallback:** Falls die Transition aus irgendeinem Grund nicht triggert
+            // (z.B. wenn keine Transition definiert ist oder in älteren Browsern)
+            // Empfehlung: Füge einen Timeout hinzu, der maximal so lange wartet, 
+            // wie die längste Transition in deinem CSS dauern sollte (z.B. 1000ms).
+            setTimeout(() => {
+                alertContainer.removeEventListener('transitionend', onTransitionEnd);
+                resolve();
+            }, 1000); // Maximal 1 Sekunde warten.
+        });
+
+        // Status zurücksetzen und nächsten Alert starten
         isAlertShowing = false;
-        showNextAlert();
-    } else if (alertQueue.length === 0 && !isAlertShowing) {
+
+        await showNextAlert();
+    }
+    // 2. Warteschlange leer
+    else if (alertQueue.length === 0 && !isAlertShowing) {
         clearInterval(queueProcessingInterval);
         queueProcessingInterval = null;
         console.log("Warteschlange leer. Warte auf neue Alerts vom Backend.");
