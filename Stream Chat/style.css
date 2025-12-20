@@ -167,6 +167,10 @@ body {
     border-left: 4px solid #ff7a3dbd;
 }
 
+.chat-message.is-lead-mod {
+    border-left: 4px solid #1e3c72;
+}
+
 /* --- Container für Badges (links) --- */
 .badges-container {
     display: flex;
@@ -223,6 +227,11 @@ body {
 /* Subscriber name color (matches orange/amber accent) */
 .is-sub .username {
     background-image: linear-gradient(to top, #ff9a4d, #ff7a3d) !important;
+}
+
+/* lead mod name color */
+.is-lead-mod .username {
+    background-image: linear-gradient(to top, #1e3c72, #2a5298) !important;
 }
 
 .chat-message .username {

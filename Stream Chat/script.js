@@ -1,4 +1,5 @@
-const MOD_BADGE_URL = "https://static-cdn.jtvnw.net/badges/v1/3267646d-33f0-4b17-b3df-f923a41db1d0/1"
+const MOD_BADGE_URL = "https://static-cdn.jtvnw.net/badges/v1/3267646d-33f0-4b17-b3df-f923a41db1d0/"
+const LEAD_MOD_BADGE_URL = "https://static-cdn.jtvnw.net/badges/v1/0822047b-65e0-46f2-94a9-d1091d685d33/"
 
 document.addEventListener('DOMContentLoaded', () => {
     const chatMessagesContainer = document.getElementById('chat-messagbox');
@@ -232,7 +233,7 @@ document.addEventListener('DOMContentLoaded', () => {
         badgesSpan.classList.add('badges-container');
 
         if (chatData.badges && Array.isArray(chatData.badges) && chatData.badges.length > 0) {
-            const allowedBadges = ['broadcaster', 'moderator', 'vip', 'subscriber', 'partner', 'cheerer', 'gifter', 'prime gaming', 'staff'];
+            const allowedBadges = ['broadcaster', 'lead_moderator', 'moderator', 'vip', 'subscriber', 'partner', 'cheerer', 'gifter', 'prime gaming', 'staff'];
 
             chatData.badges.forEach(badge => {
                 if (!allowedBadges.includes(badge.type)) {
@@ -240,7 +241,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 const badgeImg = document.createElement('img');
-                badgeImg.src = badge.url !== MOD_BADGE_URL ? badge.url : "./ModSchwert.png";
+
+                if (badge.url.startsWith(MOD_BADGE_URL)) {
+                    badgeImg.src = "./ModSchwert.png";
+                } else if (badge.url.startsWith(LEAD_MOD_BADGE_URL)) {
+                    badgeImg.src = "./ModHammer.png";
+                    messageElement.classList.add('is-lead-mod');
+                } else {
+                    badgeImg.src = badge.url;
+                }
+
                 badgeImg.alt = badge.type;
                 badgeImg.classList.add('badge-image');
                 badgesSpan.appendChild(badgeImg);
