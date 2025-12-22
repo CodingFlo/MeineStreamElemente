@@ -1,5 +1,11 @@
 // WebSocket-Verbindung zum Backend (optional für Multi-Viewer)
-const socket = io('http://localhost:3001');
+const socket = io('http://localhost:3001', {
+    reconnection: true,             // Aktiviert Auto-Reconnect
+    reconnectionAttempts: Infinity, // Versuche es unendlich oft
+    reconnectionDelay: 1000,        // Warte 1 Sekunde vor dem ersten Versuch
+    reconnectionDelayMax: 5000,     // Warte maximal 5 Sekunden zwischen Versuchen
+    timeout: 20000,                 // Connection-Timeout
+});
 
 // Joystick-Elemente
 const leftStick = document.getElementById('leftStick');
@@ -94,12 +100,37 @@ window.addEventListener('gamepaddisconnected', (e) => {
 
 // Verbindungsstatus
 socket.on('connect', () => {
-    console.log('Mit Server verbunden');
+    console.log('%c✅ Mit Backend verbunden', 'color: #00ff00; font-weight: bold');
+
+    // Falls ein Controller bereits physisch steckt, Status sofort an Server senden
+    const gamepads = navigator.getGamepads();
+    const activeGamepad = Array.from(gamepads).find(gp => gp !== null);
+
+    if (activeGamepad) {
+        socket.emit('controller-status', {
+            connected: true,
+            controllerId: activeGamepad.index,
+            name: activeGamepad.id
+        });
+    }
+
     checkForGamepads();
 });
 
-socket.on('disconnect', () => {
-    console.log('Verbindung zum Server getrennt');
+socket.on('disconnect', (reason) => {
+    console.log('%c❌ Verbindung verloren:', 'color: #ff0000', reason);
+    if (reason === 'io server disconnect') {
+        // Falls der Server die Verbindung aktiv getrennt hat, manuell neu verbinden
+        socket.connect();
+    }
+});
+
+socket.on('reconnect_attempt', (attempt) => {
+    console.log(`Versuche Wiederverbindung... (Versuch ${attempt})`);
+});
+
+socket.on('reconnect', (attempt) => {
+    console.log(`Wieder verbunden nach ${attempt} Versuchen.`);
 });
 
 // Empfange Controller-Eingaben von anderen Clients
