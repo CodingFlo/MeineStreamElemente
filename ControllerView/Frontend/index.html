@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controller Visualisierung</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <div class="controller-wrapper">
+            <div class="controller">
+
+                <!-- Linke Seite -->
+                <div class="left-side">
+                    <!-- Linker Joystick (oben) -->
+                    <div class="joystick-container">
+                        <div class="joystick-base">
+                            <div class="joystick-stick" id="leftStick" data-axis-x="0" data-axis-y="1">
+                                <div class="joystick-dot"></div>
+                            </div>
+                        </div>
+                        <div class="joystick-button" data-button="10">L</div>
+                    </div>
+
+                    <!-- D-Pad (unten) -->
+                    <div class="dpad-container">
+                        <div class="dpad">
+                            <div class="dpad-button dpad-up" data-button="12">
+                                <div class="dpad-arrow">▲</div>
+                            </div>
+                            <div class="dpad-button dpad-down" data-button="13">
+                                <div class="dpad-arrow">▼</div>
+                            </div>
+                            <div class="dpad-button dpad-left" data-button="14">
+                                <div class="dpad-arrow">◀</div>
+                            </div>
+                            <div class="dpad-button dpad-right" data-button="15">
+                                <div class="dpad-arrow">▶</div>
+                            </div>
+                            <div class="dpad-center"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mitte -->
+                <div class="center-area">
+                    <!-- Minus und Plus in einer Reihe -->
+                    <div class="top-center-buttons">
+                        <button class="side-btn" data-button="8">−</button>
+                        <button class="side-btn" data-button="9">+</button>
+                    </div>
+
+                    <!-- Center Buttons (Mitte) -->
+                    <div class="center-buttons">
+                        <button class="center-btn screenshot-btn" data-button="17">⬤</button>
+                        <button class="center-btn home-btn" data-button="16">⌂</button>
+                    </div>
+                </div>
+
+                <!-- Rechte Seite -->
+                <div class="right-side">
+                    <!-- Action Buttons (oben) -->
+                    <div class="action-buttons">
+                        <button class="action-btn btn-x" data-button="2">
+                            <span>X</span>
+                        </button>
+                        <button class="action-btn btn-a" data-button="0">
+                            <span>A</span>
+                        </button>
+                        <button class="action-btn btn-y" data-button="3">
+                            <span>Y</span>
+                        </button>
+                        <button class="action-btn btn-b" data-button="1">
+                            <span>B</span>
+                        </button>
+                    </div>
+
+                    <!-- Rechter Joystick (unten) -->
+                    <div class="joystick-container">
+                        <div class="joystick-base">
+                            <div class="joystick-stick" id="rightStick" data-axis-x="2" data-axis-y="3">
+                                <div class="joystick-dot"></div>
+                            </div>
+                        </div>
+                        <div class="joystick-button" data-button="11">R</div>
+                    </div>
+                </div>
+
+                <!-- Schultertasten -->
+                <div class="shoulder-buttons">
+                    <div class="shoulder-left">
+                        <button class="shoulder-btn" data-button="4">L</button>
+                        <button class="trigger-btn" data-button="6">ZL</button>
+                    </div>
+                    <div class="shoulder-right">
+                        <button class="shoulder-btn" data-button="5">R</button>
+                        <button class="trigger-btn" data-button="7">ZR</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>
