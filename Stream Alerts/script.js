@@ -56,7 +56,8 @@ function intializeWebsocket() {
 
         ws.send(JSON.stringify({
             action: 'identify', // Eine Aktion, damit der Server weiß, was zu tun ist
-            clientType: 'alert' // Der spezifische Typ dieses Clients
+            clientType: 'alert', // Der spezifische Typ dieses Clients
+            app: 'c7' // Die dazugehörige App des Clients
         }));
     };
 
@@ -273,7 +274,7 @@ async function showNextAlert() {
             nextAlert.sound.removeEventListener('ended', () => { });
             // nextAlert.sound.pause(); // Optional: Stoppe den Sound, wenn Mindestzeit erreicht
         }
-        
+
         alertContainer.classList.remove('visible');
         alertContainer.classList.add('hidden');
 

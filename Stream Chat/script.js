@@ -77,7 +77,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             ws.send(JSON.stringify({
                 action: 'identify', // Eine Aktion, damit der Server weiß, was zu tun ist
-                clientType: 'chat' // Der spezifische Typ dieses Clients
+                clientType: 'chat', // Der spezifische Typ dieses Clients
+                app: 'c7' // Die dazugehörige App des Clients
             }));
         };
 

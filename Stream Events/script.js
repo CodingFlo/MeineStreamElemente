@@ -209,7 +209,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             ws.send(JSON.stringify({
                 action: 'identify', // Eine Aktion, damit der Server weiß, was zu tun ist
-                clientType: 'alert' // Der spezifische Typ dieses Clients
+                clientType: 'alert', // Der spezifische Typ dieses Clients
+                app: 'c7' // Die dazugehörige App des Clients
             }));
         };
 
@@ -397,7 +398,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         type: 'alert',
                         data: clickedAlertData,
                         realert: true,
-                    }
+                    },
+                    app: 'c7' // Die dazugehörige App des Clients
                 }));
                 console.log('Re-Alert request sent:', clickedAlertData);
             } else {
@@ -433,7 +435,8 @@ document.addEventListener('DOMContentLoaded', () => {
             // Send the original alertData object, wrapped in a type for the server to understand
             ws.send(JSON.stringify({
                 category: 'alertMute', // A new type to identify this message on the server
-                state: 'true', // or 'false' to unmute
+                state: 'true', // or 'false' to unmute,
+                app: 'c7' // Die dazugehörige App des Clients
             }));
             console.log('Re-Alert request sent:', clickedAlertData);
         } else {
@@ -452,6 +455,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ws.send(JSON.stringify({
                 category: 'alertMute', // A new type to identify this message on the server
                 state: null, // or 'false' to unmute
+                app: 'c7' // Die dazugehörige App des Clients
             }));
             console.log('Re-Alert request sent:', clickedAlertData);
         } else {

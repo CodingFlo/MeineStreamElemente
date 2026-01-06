@@ -21,7 +21,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             ws.send(JSON.stringify({
                 action: 'identify', // Eine Aktion, damit der Server weiß, was zu tun ist
-                clientType: 'viewerLists' // Der spezifische Typ dieses Clients
+                clientType: 'viewerLists', // Der spezifische Typ dieses Clients
+                app: 'c7' // Die dazugehörige App des Clients
             }));
         };
 

@@ -3,44 +3,46 @@ const http = require('http');
 const socketIo = require('socket.io');
 const path = require('path');
 
-const app = express();
-const server = http.createServer(app);
-const io = socketIo(server, {
-    cors: {
-        origin: "*",
-        methods: ["GET", "POST"]
-    }
-});
+const processManager = require('./process-manager');
+const virtualPad = require('./virtual-pad');
+const gamepadProvider = require('./gamepad-provider');
 
 const PORT = 3001;
+const app = express();
+const server = http.createServer(app);
+const io = socketIo(server, { cors: { origin: "*" } });
 
-// Statische Dateien aus dem Frontend-Ordner bereitstellen
+// 1. Initialisierungen
+virtualPad.init();
+
+// 2. Hardware-Reader starten (Daten kommen vom Backend, nicht vom Browser!)
+gamepadProvider.start((data) => {
+    // Sende Daten an das OBS-Frontend
+    io.emit('controller-input', data);
+    // Optional: Weitergabe an virtuellen Controller
+    virtualPad.forward(data);
+});
+
+// 3. Webserver Setup
 app.use(express.static(path.join(__dirname, '../Frontend')));
+app.get('/', (req, res) => res.sendFile(path.join(__dirname, '../Frontend/index.html')));
 
-// Root-Route
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../Frontend/index.html'));
-});
-
-// WebSocket-Verbindung
 io.on('connection', (socket) => {
-    console.log('Client verbunden');
-
-    // Empfange Controller-Daten vom Client (Browser nutzt Gamepad API)
+    console.log('OBS Client verbunden');
+    // Falls ein Browser-Fenster doch senden will (als Fallback)
     socket.on('controller-input', (data) => {
-        // Broadcast an alle anderen Clients (falls mehrere Viewer)
         socket.broadcast.emit('controller-input', data);
-    });
-
-    socket.on('controller-status', (data) => {
-        console.log('Controller Status:', data);
-        socket.broadcast.emit('controller-status', data);
-    });
-
-    socket.on('disconnect', () => {
-        console.log('Client getrennt');
+        virtualPad.forward(data);
     });
 });
+
+// 4. Shutdown handling
+const shutdown = () => {
+    processManager.killAllChildren();
+    process.exit();
+};
+process.on('SIGINT', shutdown);
+process.on('SIGTERM', shutdown);
 
 server.listen(PORT, () => {
     console.log(`🎮 Controller View Server läuft!`);

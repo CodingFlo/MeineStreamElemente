@@ -108,7 +108,8 @@ function connectWebSocket() {
 
         ws.send(JSON.stringify({
             action: 'identify', // Eine Aktion, damit der Server weiß, was zu tun ist
-            clientType: 'liveStats' // Der spezifische Typ dieses Clients
+            clientType: 'liveStats', // Der spezifische Typ dieses Clients
+            app: 'c7' // Die dazugehörige App des Clients
         }));
     };
 
