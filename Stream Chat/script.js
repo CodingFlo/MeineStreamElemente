@@ -1,10 +1,47 @@
 const MOD_BADGE_URL = "https://static-cdn.jtvnw.net/badges/v1/3267646d-33f0-4b17-b3df-f923a41db1d0/"
 const LEAD_MOD_BADGE_URL = "https://static-cdn.jtvnw.net/badges/v1/0822047b-65e0-46f2-94a9-d1091d685d33/"
 
+const ENABLE_DEBUG_LOG = false; // <-- Hier auf true setzen für Matrix-Debug-Overlay
+
+function debugLog(msg) {
+    if (!ENABLE_DEBUG_LOG) return;
+
+    let debugContainer = document.getElementById('debug-container');
+    if (!debugContainer) {
+        if (!document.body) return;
+        debugContainer = document.createElement('div');
+        debugContainer.id = 'debug-container';
+        debugContainer.style.position = 'fixed';
+        debugContainer.style.top = '0';
+        debugContainer.style.right = '0';
+        debugContainer.style.width = '300px';
+        debugContainer.style.maxHeight = '50%';
+        debugContainer.style.overflowY = 'auto';
+        debugContainer.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+        debugContainer.style.color = '#0f0';
+        debugContainer.style.fontFamily = 'monospace';
+        debugContainer.style.fontSize = '12px';
+        debugContainer.style.padding = '10px';
+        debugContainer.style.zIndex = '9999';
+        debugContainer.style.pointerEvents = 'none';
+        document.body.appendChild(debugContainer);
+    }
+    const line = document.createElement('div');
+    line.textContent = `> ${msg}`;
+    line.style.borderBottom = '1px solid #333';
+    debugContainer.appendChild(line);
+    debugContainer.scrollTop = debugContainer.scrollHeight;
+}
+
+// Trace: Script start
+debugLog("Line 1: script.js loaded");
+
 document.addEventListener('DOMContentLoaded', () => {
+    debugLog("Line 4: DOMContentLoaded started");
     const chatMessagesContainer = document.getElementById('chat-messagbox');
 
     const WS_URL = C7_CONFIG.getWebsocketUrl();
+    debugLog(`Line 7: Config loaded. WS_URL detected: ${WS_URL}`);
     let ws;
 
     // --- Konfiguration für Nachrichtenspeicher ---
@@ -70,10 +107,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function connectWebSocket() {
+        debugLog(`Line 73: connectWebSocket called. Connecting to ${WS_URL}`);
         ws = new WebSocket(WS_URL);
 
         ws.onopen = (event) => {
             console.log('[WebSocket] Verbunden mit WebSocket-Server');
+            debugLog("Line 76: WebSocket Connected (onopen)");
 
             ws.send(JSON.stringify({
                 action: 'identify', // Eine Aktion, damit der Server weiß, was zu tun ist
@@ -83,6 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         ws.onmessage = (event) => {
+            debugLog(`Line 85: Message received (type: ${JSON.parse(event.data).type})`);
             const data = JSON.parse(event.data);
 
             if (data.type === 'chatMessage') {
@@ -100,10 +140,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         ws.onerror = (error) => {
             console.error('[WebSocket] Fehler im Frontend:', error);
+            debugLog("Line 101: WebSocket Error! Check console/network.");
         };
 
         ws.onclose = (event) => {
             console.warn('[WebSocket] Verbindung geschlossen:', event.reason || 'Unbekannt');
+            debugLog(`Line 105: WebSocket Closed. Code: ${event.code}, Reason: ${event.reason}`);
             setTimeout(connectWebSocket, 3000); // Versuche, nach 3 Sekunden erneut zu verbinden
         };
     }
@@ -112,6 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Beim Laden der Seite zuerst gespeicherte Nachrichten anzeigen
     loadAndDisplayStoredMessages();
+    debugLog("Line 114: Initializing WebSocket connection...");
     connectWebSocket();
 
     function exampleMessages() {

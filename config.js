@@ -12,15 +12,19 @@ const C7_CONFIG = (() => {
 
     // Logik zur Ermittlung der korrekten WebSocket-URL
     function getWebsocketUrl() {
+        const protocol = window.location.protocol;
+        const host = window.location.host;
+
+        console.log('[Connection Check] Protocol:', protocol, 'Host:', host);
+
         // Fall 1: Wir sind im Browser und die Seite wird vom Server ausgeliefert (http/https)
-        if (window.location.protocol.startsWith('http')) {
-            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const host = window.location.host; // Enthält Hostname und Port
-            return `${protocol}//${host}/${APP_CONTEXT}`;
+        // ABER: Wenn der Host 'absolute' ist (OBS internal), dann ignoriere das und nutze Localhost defaults.
+        if (protocol.startsWith('http') && host !== 'absolute') {
+            const wsProtocol = protocol === 'https:' ? 'wss:' : 'ws:';
+            return `${wsProtocol}//${host}/${APP_CONTEXT}`;
         }
 
-        // Fall 2: Wir sind lokal geöffnet (z.B. OBS Browser Source als "Local File" oder file://)
-        // Hier greifen wir auf die Standardeinstellungen zurück.
+        // Fall 2: Wir sind lokal geöffnet (File, OBS 'absolute', etc.)
         return `ws://${DEFAULT_SERVER_HOST}:${DEFAULT_SERVER_PORT}/${APP_CONTEXT}`;
     }
 
