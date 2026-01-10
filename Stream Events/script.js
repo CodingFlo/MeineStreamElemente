@@ -11,8 +11,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const muteButton = document.getElementById('mute-Button');
     const fullMuteButton = document.getElementById('full-mute-button');
 
-    // Setze die WebSocket-URL explizit auf die Adresse deines Node.js-Servers.
-    const websocketUrl = 'ws://localhost:3000';
+    // Setze die WebSocket-URL über die globale Config
+    const websocketUrl = C7_CONFIG.getWebsocketUrl();
 
     let ws;
     let firstAlertReceived = false;

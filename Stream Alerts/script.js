@@ -48,7 +48,7 @@ let ws = null;
 intializeWebsocket();
 
 function intializeWebsocket() {
-    ws = new WebSocket('ws://localhost:3000');
+    ws = new WebSocket(C7_CONFIG.getWebsocketUrl());
 
     ws.onopen = () => {
         console.log('[Frontend] WebSocket-Verbindung zum Backend hergestellt.');

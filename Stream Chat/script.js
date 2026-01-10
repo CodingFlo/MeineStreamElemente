@@ -4,7 +4,7 @@ const LEAD_MOD_BADGE_URL = "https://static-cdn.jtvnw.net/badges/v1/0822047b-65e0
 document.addEventListener('DOMContentLoaded', () => {
     const chatMessagesContainer = document.getElementById('chat-messagbox');
 
-    const WS_URL = 'ws://localhost:3000';
+    const WS_URL = C7_CONFIG.getWebsocketUrl();
     let ws;
 
     // --- Konfiguration für Nachrichtenspeicher ---

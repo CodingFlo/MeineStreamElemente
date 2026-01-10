@@ -1,6 +1,6 @@
 // client.js
 
-const websocketUrl = 'ws://localhost:3000'; // Passe dies an deine Backend-Adresse an!
+const websocketUrl = C7_CONFIG.getWebsocketUrl();
 let ws;
 let initialDataReceived = false; // Flag, um zu verfolgen, ob jemals Daten empfangen wurden
 

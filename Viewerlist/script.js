@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
      * Stellt die Verbindung zum WebSocket-Server her.
      */
     function connectWebSocket() {
-        const ws = new WebSocket('ws://localhost:3000');
+        const ws = new WebSocket(C7_CONFIG.getWebsocketUrl());
         ws.onopen = () => {
             console.log('WebSocket-Verbindung erfolgreich hergestellt.');
             statusEl.textContent = 'Verbunden';
